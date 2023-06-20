@@ -1,3 +1,7 @@
+import Notiflix from 'notiflix';
+
+const axios = require('axios').default;
+
 const form = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
@@ -31,8 +35,8 @@ async function performSearch() {
   )}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`;
 
   try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    const response = await axios.get(apiUrl);
+    const data = response.data;
 
     if (data.hits.length === 0) {
       showNoResultsMessage();
@@ -51,7 +55,7 @@ async function performSearch() {
 
 function displayImages(images) {
   const cardsHTML = images.map(image => createImageCard(image)).join('');
-  gallery.innerHTML += cardsHTML;
+  gallery.insertAdjacentHTML('beforeend', cardsHTML);
 }
 
 function createImageCard(image) {
@@ -69,13 +73,13 @@ function createImageCard(image) {
 }
 
 function showNoResultsMessage() {
-  notiflix.Notify.failure(
+  Notiflix.Notify.failure(
     'Sorry, there are no images matching your search query. Please try again.'
   );
 }
 
 function showEndOfResultsMessage() {
-  notiflix.Notify.info(
+  Notiflix.Notify.info(
     "We're sorry, but you've reached the end of search results."
   );
 }
